@@ -5,28 +5,28 @@ const bodyParser = require('body-parser')
 
 app.use(bodyParser.json())
 
+const books = []
 
-// respond with "hello world" when a GET request is made to the homepage
-app.use((req, res, next) => {
-    console.log('This api is called at ', new Date().toLocaleString())
-    next()
-})
+// post -> book name, author, price, quantity
 
-app.get('/', (req, res, next) => {
+app.post('/', (req, res, next) => {
+    const payload = {
+        id: books.length + 1,
+        name: req.body.name,
+        author: req.body.author,
+        price: req.body.price,
+        quantity: req.body.quantity
+    }
+    books.push(payload)
     res.json({
-        data: 'hello world'
+        success: true
     })
 })
 
-app.use((req, res, next) => {
-    console.log('This middleware will be called for /test only')
-    next()
+app.get('/', (req, res, next) => {
+    res.json(books)
 })
 
-
-app.get('/test', (req, res, next) => {
-    res.send('hello world with test')
-})
 
 app.listen('8000', () => {
     console.log('server started')
