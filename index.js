@@ -27,6 +27,13 @@ app.get('/', (req, res, next) => {
     res.json(books)
 })
 
+app.get('/:id', (req, res, next) => {
+    const book = books.find(eachBook => eachBook.id == req.params.id)
+    res.json({
+        data: book
+    })
+})
+
 
 app.listen('8000', () => {
     console.log('server started')
