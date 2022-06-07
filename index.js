@@ -1,54 +1,10 @@
 const express = require('express')
 const app = express()
+const models = require('./models')
 
 const bodyParser = require('body-parser')
 
 app.use(bodyParser.json())
-
-let books = [
-    {
-        "id": 1,
-        "name": "Maths",
-        "author": "RD sharma",
-        "price": 300,
-        "quantity": 5
-    },
-    {
-        "id": 2,
-        "name": "Physics",
-        "author": "HC verma",
-        "price": 300,
-        "quantity": 5
-    },
-    {
-        "id": 3,
-        "name": "Maths",
-        "author": "RD sharma",
-        "price": 300,
-        "quantity": 5
-    },
-    {
-        "id": 4,
-        "name": "Physics",
-        "author": "HC verma",
-        "price": 300,
-        "quantity": 5
-    },
-    {
-        "id": 5,
-        "name": "Maths",
-        "author": "RD sharma",
-        "price": 300,
-        "quantity": 5
-    },
-    {
-        "id": 6,
-        "name": "Physics",
-        "author": "HC verma",
-        "price": 300,
-        "quantity": 5
-    }
-]
 
 // post -> book name, author, price, quantity
 
@@ -59,27 +15,54 @@ app.use((req, res, next) => {
 
 app.post('/', (req, res, next) => {
     const payload = {
-        id: books.length + 1,
         name: req.body.name,
         author: req.body.author,
         price: req.body.price,
         quantity: req.body.quantity
     }
-    books.push(payload)
-    res.json({
-        success: true
-    })
+    models.Books.create(payload).then((result) => {
+        res.json({
+            success: true
+        })
+    }).catch((err) => {
+        console.log(err)
+        res.json({
+            success: false,
+            message: 'Error occurred'
+        })
+    });
 })
 
 app.get('/', (req, res, next) => {
-    res.json(books)
+    models.Books.findAll().then((result) => {
+        res.json({
+            result
+        })
+    }).catch((err) => {
+        console.log(err)
+        res.json({
+            success: false,
+            message: 'Error occurred'
+        })
+    });
 })
 
 app.get('/:id', (req, res, next) => {
-    const book = books.find(eachBook => eachBook.id == req.params.id)
-    res.json({
-        data: book
-    })
+    models.Books.findOne({
+        where: {
+            id: req.params.id
+        }
+    }).then((result) => {
+        res.json({
+            result
+        })
+    }).catch((err) => {
+        console.log(err)
+        res.json({
+            success: false,
+            message: 'Error occurred'
+        })
+    });
 })
 
 app.put('/:id', (req, res, next) => {
