@@ -63,21 +63,29 @@ router.get('/:id', (req, res, next) => {
 })
 
 router.put('/:id', (req, res, next) => {
-    const index = Number(req.params.id) - 1
-    books[index].price = req.body.price
-    books[index].quantity = req.body.quantity
-    res.json({
-        success: true,
-        changedData: books[index]
-    })
+    
+    
+ 
+  
 })
 
 router.delete('/:id', (req, res, next) => {
-    const index = Number(req.params.id) - 1
-    books.splice(index, 1)
+
+   models.Books.destroy( {
+    where: {
+      id:req.params.id
+    }
+  }).then((result) => {
     res.json({
-        success: true
+        result
     })
+}).catch((err) => {
+    console.log(err)
+    res.json({
+        success: false,
+        message: 'Error occurred'
+    })
+});
 })
 
 

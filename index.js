@@ -15,7 +15,7 @@ app.use((req, res, next) => {
 app.use('/books', apiHandler)
 
 app.use((error, req, res, next) => {
-    console.log('sent from error handler')
+    console.log(error)
     res.json({
         success: false,
         error
