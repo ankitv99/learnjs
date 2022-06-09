@@ -32,17 +32,17 @@ router.post('/', (req, res, next) => {
 
 router.get('/', (req, res, next) => {
     models.Books.findAll().then
-    ((result) => {
-        res.json({
-            result
-        })
-    }).catch((err) => {
-        console.log(err)
-        res.json({
-            success: false,
-            message: 'Error occurred'
-        })
-    });
+        ((result) => {
+            res.json({
+                result
+            })
+        }).catch((err) => {
+            console.log(err)
+            res.json({
+                success: false,
+                message: 'Error occurred'
+            })
+        });
 })
 
 router.get('/:id', (req, res, next) => {
@@ -130,4 +130,4 @@ router.post('/:id/copy', (req, res, next) => {
         next(err);
     })
 })
-    module.exports = router
+module.exports = router
