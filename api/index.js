@@ -11,7 +11,7 @@ router.post('/', (req, res, next) => {
         quantity: Joi.number().integer().min(1).required()
     })
     const details = schema.validate(req.body)
-    if(!details.error){
+    if (!details.error) {
         const payload = {
             name: req.body.name,
             author: req.body.author,
@@ -64,43 +64,41 @@ router.get('/:id', (req, res, next) => {
 
 router.put('/:id', (req, res, next) => {
     const schema = Joi.object({
-        
+
         price: Joi.number().integer().min(1).required(),
         quantity: Joi.number().integer().min(1).required()
     })
     const details = schema.validate(req.body)
-    if(!details.error){
+    if (!details.error) {
         const payload = {
-            
             price: req.body.price,
             quantity: req.body.quantity
         }
+
+        models.Books.update(payload, {
+            where: {
+                id: req.params.id
+            }
+        }).then((result) => {
+            res.json({
+                result
+            })
+        }).catch((err) => {
+            console.log(err)
+            res.json({
+                success: false,
+                message: 'Error occurred'
+            })
+        });
     }
-    
- models.Books.update({price:req.body.price, quantity:req.body.quantity }, {
-    where: {
-      id:req.params.id
-    }
-  }).then((result) => {
-    res.json({
-        result
-    })
-}).catch((err) => {
-    console.log(err)
-    res.json({
-        success: false,
-        message: 'Error occurred'
-    })
-});
-  
 })
 
 router.delete('/:id', (req, res, next) => {
-    models.Books.destroy( {
+    models.Books.destroy({
         where: {
-          id:req.params.id
+            id: req.params.id
         }
-      }).then((result) => {
+    }).then((result) => {
         res.json({
             result
         })
