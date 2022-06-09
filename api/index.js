@@ -31,7 +31,8 @@ router.post('/', (req, res, next) => {
 })
 
 router.get('/', (req, res, next) => {
-    models.Books.findAll().then((result) => {
+    models.Books.findAll().then
+    ((result) => {
         res.json({
             result
         })
@@ -111,5 +112,22 @@ router.delete('/:id', (req, res, next) => {
     });
 })
 
-
-module.exports = router
+router.post('/:id/copy', (req, res, next) => {
+    models.Books.findOne({
+        where: { id: req.params.id }
+    }).then((foundBook) => {
+        return models.Books.create({
+            name: foundBook.name,
+            author: foundBook.author,
+            price: foundBook.price,
+            quantity: foundBook.quantity
+        })
+    }).then(() => {
+        res.json({
+            success: true
+        })
+    }).catch(err => {
+        next(err);
+    })
+})
+    module.exports = router
