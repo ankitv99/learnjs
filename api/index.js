@@ -63,7 +63,19 @@ router.get('/:id', (req, res, next) => {
 })
 
 router.put('/:id', (req, res, next) => {
-    
+    const schema = Joi.object({
+        
+        price: Joi.number().integer().min(1).required(),
+        quantity: Joi.number().integer().min(1).required()
+    })
+    const details = schema.validate(req.body)
+    if(!details.error){
+        const payload = {
+            
+            price: req.body.price,
+            quantity: req.body.quantity
+        }
+    }
     
  models.Books.update({price:req.body.price, quantity:req.body.quantity }, {
     where: {
