@@ -2,95 +2,86 @@ const Joi = require('joi')
 const models = require('../../models')
 
 
-const addUser = (req, res, next) => {
-    const schema = Joi.object({
-        firstName: Joi.string().min(2).required(),
-        lastName: Joi.string().min(2).required(),
-        email: Joi.string().email().min(2).required()
-    })
-    const details = schema.validate(req.body)
-    if (!details.error) {
+const addUser = async (req, res, next) => {
+    try {
+        const schema = Joi.object({
+            firstName: Joi.string().min(2).required(),
+            lastName: Joi.string().min(2).required(),
+            email: Joi.string().email().min(2).required()
+        })
+        await schema.validateAsync(req.body)
 
         const data = {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             email: req.body.email
         }
-        models.User.create(data).then((result) => {
-
-            res.json({
-                success: true
-            })
-        }).catch((err) => {
-            next(err)
-        });
-    } else {
-        next(details.error)
+        await models.User.create(data)
+        res.json({
+            success: true
+        })
+    }
+    catch (error) {
+        next(error)
     }
 
 }
 
-const getUser = (req, res, next) => {
-    models.User.findAll({ order: [['id', 'ASC']] }).then
-        ((result) => {
-            res.json({
-                result
-            })
-        }).catch((err) => {
-            console.log(err)
-            res.json({
-                success: false,
-                message: 'Error occurred'
-            })
-        });
-}
-
-const updateUser = (req, res, next) => {
-    const schema = Joi.object({
-
-        firstName: Joi.string().min(2).required(),
-        lastName: Joi.string().min(2).required(),
-        email: Joi.string().email().min(2).required()
-    })
-    const details = schema.validate(req.body)
-    if (!details.error) {
-        const data = {
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email
-        }
-
-        models.User.update(data, {
-            where: {
-                id: req.params.id
-            }
-        }).then((result) => {
-            res.json({
-                result
-            })
-        }).catch((err) => {
-            console.log(err)
-            res.json({
-                success: false,
-                message: 'Error occurred'
-            })
-        });
-    } else {
-        next(details.error)
-    }
-}
-const deleteUser = (req, res, next) => {
-    models.User.destroy({
-        where: {
-            id: req.params.id
-        }
-    }).then((result) => {
+const getUser = async (req, res, next) => {
+    try {
+        await models.User.findAll({ order: [['id', 'ASC']] })
         res.json({
             result
         })
-    }).catch((err) => {
-        next(err)
-    });
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+const updateUser = async (req, res, next) => {
+    try {
+        const schema = Joi.object({
+
+            firstName: Joi.string().min(2).required(),
+            lastName: Joi.string().min(2).required(),
+            email: Joi.string().email().min(2).required()
+        })
+        await schema.validateAsync(req.body)
+        const data = {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email
+        }
+
+        await models.User.update(data, {
+            where: {
+                id: req.params.id
+            }
+        })
+        res.json({
+            result
+        })
+
+    }
+    catch (error) {
+        next(error)
+    }
+}
+const deleteUser = async (req, res, next) => {
+    try {
+        await models.User.destroy({
+            where: {
+                id: req.params.id
+            }
+        })
+        res.json({
+            result
+        })
+    } catch (error) {
+        next(error)
+    }
+
 }
 module.exports = {
     addUser,

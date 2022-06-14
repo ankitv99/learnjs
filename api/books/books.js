@@ -2,132 +2,123 @@ const Joi = require('joi')
 const models = require('../../models')
 
 
-const addBooks = (req, res, next) => {
-    const schema = Joi.object({
-        name: Joi.string().min(3).max(200).required(),
-        author: Joi.string().min(3).max(200).required(),
-        price: Joi.number().integer().min(1).required(),
-        quantity: Joi.number().integer().min(1).required()
-    })
-    const details = schema.validate(req.body)
-    if (!details.error) {
+const addBooks = async (req, res, next) => {
+    try {
+        const schema = Joi.object({
+            name: Joi.string().min(3).max(200).required(),
+            author: Joi.string().min(3).max(200).required(),
+            price: Joi.number().integer().min(1).required(),
+            quantity: Joi.number().integer().min(1).required()
+        })
+        await schema.validateAsync(req.body)
         const payload = {
             name: req.body.name,
             author: req.body.author,
             price: req.body.price,
             quantity: req.body.quantity
         }
-        models.Books.create(payload).then((result) => {
-            res.json({
-                success: true
-            })
-        }).catch((err) => {
-            next(err)
-        });
-    } else {
-        next(details.error)
+        await models.Books.create(payload)
+        res.json({
+            success: true
+        })
+
+    } catch (error) {
+        next(error)
+
     }
+
 }
 
-const getBooks = (req, res, next) => {
-    models.Books.findAll().then
-        ((result) => {
-            res.json({
-                result
-            })
-        }).catch((err) => {
-            console.log(err)
-            res.json({
-                success: false,
-                message: 'Error occurred'
-            })
-        });
-}
-
-const getOneBook = (req, res, next) => {
-    models.Books.findOne({
-        where: {
-            id: req.params.id
-        }
-    }).then((result) => {
+const getBooks = async (req, res, next) => {
+    try {
+        await models.Books.findAll()
         res.json({
             result
         })
-    }).catch((err) => {
-        console.log(err)
-        res.json({
-            success: false,
-            message: 'Error occurred'
-        })
-    });
+    } catch (error) {
+        next(error)
+    }
+
 }
 
-const updateBook = (req, res, next) => {
-    const schema = Joi.object({
+const getOneBook = async (req, res, next) => {
+    try {
+        await models.Books.findOne({
+            where: {
+                id: req.params.id
+            }
+        })
+        res.json({
+            result
+        })
+    }
+    catch (error) {
+        next(error)
+    }
+}
 
-        price: Joi.number().integer().min(1).required(),
-        quantity: Joi.number().integer().min(1).required()
-    })
-    const details = schema.validate(req.body)
-    if (!details.error) {
+
+const updateBook = async (req, res, next) => {
+    try {
+        const schema = Joi.object({
+
+            price: Joi.number().integer().min(1).required(),
+            quantity: Joi.number().integer().min(1).required()
+        })
+        await schema.validateAsync(req.body)
         const payload = {
             price: req.body.price,
             quantity: req.body.quantity
         }
-
-        models.Books.update(payload, {
+        await models.Books.update(payload, {
             where: {
                 id: req.params.id
             }
-        }).then((result) => {
-            res.json({
-                result
-            })
-        }).catch((err) => {
-            console.log(err)
-            res.json({
-                success: false,
-                message: 'Error occurred'
-            })
-        });
-    }
-}
-
-const deleteBook = (req, res, next) => {
-    models.Books.destroy({
-        where: {
-            id: req.params.id
-        }
-    }).then((result) => {
+        })
         res.json({
             result
         })
-    }).catch((err) => {
-        console.log(err)
-        res.json({
-            success: false,
-            message: 'Error occurred'
-        })
-    });
+    }
+    catch (error) {
+        next(error)
+    }
 }
 
-const copyBook = (req, res, next) => {
-    models.Books.findOne({
-        where: { id: req.params.id }
-    }).then((foundBook) => {
-        return models.Books.create({
+
+const deleteBook = async (req, res, next) => {
+    try {
+        await models.Books.destroy({
+            where: {
+                id: req.params.id
+            }
+        })
+        res.json({
+            result
+        })
+    }
+    catch (error) {
+        next(error)
+    }
+}
+
+const copyBook = async (req, res, next) => {
+    try {
+        const foundBook = await models.Books.findOne({
+            where: { id: req.params.id }
+        })
+        await models.Books.create({
             name: foundBook.name,
             author: foundBook.author,
             price: foundBook.price,
             quantity: foundBook.quantity
         })
-    }).then(() => {
         res.json({
             success: true
         })
-    }).catch(err => {
-        next(err);
-    })
+
+    } catch (error) {
+        next(error)
+    }
 }
 
 module.exports = {
