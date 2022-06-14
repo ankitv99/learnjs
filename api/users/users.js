@@ -75,6 +75,8 @@ const updateUser = (req, res, next) => {
                 message: 'Error occurred'
             })
         });
+    } else {
+        next(details.error)
     }
 }
 const deleteUser = (req, res, next) => {
@@ -87,11 +89,7 @@ const deleteUser = (req, res, next) => {
             result
         })
     }).catch((err) => {
-        console.log(err)
-        res.json({
-            success: false,
-            message: 'Error occurred'
-        })
+        next(err)
     });
 }
 module.exports = {
