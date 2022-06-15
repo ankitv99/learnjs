@@ -31,7 +31,7 @@ const addBooks = async (req, res, next) => {
 
 const getBooks = async (req, res, next) => {
     try {
-        await models.Books.findAll()
+        const result = await models.Books.findAll()
         res.json({
             result
         })

@@ -29,7 +29,7 @@ const addUser = async (req, res, next) => {
 
 const getUser = async (req, res, next) => {
     try {
-        await models.User.findAll({ order: [['id', 'ASC']] })
+        const result = await models.User.findAll({ order: [['id', 'ASC']] })
         res.json({
             result
         })
