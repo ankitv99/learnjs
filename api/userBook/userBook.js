@@ -13,7 +13,7 @@ const addUserBook = async (req, res, next) => {
         if (foundBook.quantity < req.body.quantity) {
             return res.json({
                 success: false,
-                message: 'Book quantity is more than available'
+                message: 'Required Book quantity is more than available'
             })
         }
         if (!foundBook) {
